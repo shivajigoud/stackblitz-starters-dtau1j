@@ -71,7 +71,7 @@ ul li {
   display: none;
 }
 @media screen and (min-width: 320px) and (max-width: 769px) {
-  /* .filter_drop_down {
+  .filter_drop_down {
     inset: 0 0 0 0 !important;
-  } */
+  }
 }
