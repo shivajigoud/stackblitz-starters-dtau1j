@@ -69,7 +69,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
                       return (
                         <li key={todo.id}>
                           <input type="checkbox" id={todo.id} />
-                          <label htmlFor={todo.id}>{todo.value}</label>
+                          <label htmlFor={todo.id}>{todo.title}</label>
                         </li>
                       );
                     })}
