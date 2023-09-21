@@ -83,9 +83,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
                       setDropdownLeftPosition(
                         document.activeElement.getBoundingClientRect().left
                       );
-                      currentPage == page
-                        ? setShowDropDown(true)
-                        : setShowDropDown(false);
+                      setShowDropDown(true);
                     }}
                     className={`${currentPage == page ? 'active' : ''}`}
                   >
