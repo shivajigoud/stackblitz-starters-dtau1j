@@ -5,7 +5,7 @@ import './style.css';
 
 export const App: FC<{ name: string }> = ({ name }) => {
   const [todos, setTodos] = useState([]);
-  const [todosPerPage, setTodosPerPage] = useState(10);
+  const [todosPerPage, setTodosPerPage] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastTodo = currentPage + todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
