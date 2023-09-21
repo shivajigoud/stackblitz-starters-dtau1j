@@ -20,7 +20,8 @@ export const App: FC<{ name: string }> = ({ name }) => {
       pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
       if (document.activeElement.offsetLeft > pageWrapperRef.current.scrollLeft)
         pageWrapperRef.current.scrollLeft =
-          pageWrapperRef.current.scrollLeft - 30;
+          pageWrapperRef.current.scrollLeft -
+          document.activeElement.offsetWidth;
     }
   }
   function nextPage(): any {
