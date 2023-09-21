@@ -55,10 +55,16 @@ ul li {
   display: flex;
   flex-direction: column;
   inset: 55px auto auto;
+  z-index: 1000;
 }
 .show {
   display: flex;
 }
 .hide {
   display: none;
+}
+@media screen and (min-width: 320px) and (max-width: 769px) {
+  .filter_drop_down {
+    inset: 0 0 0 0 !important;
+  }
 }

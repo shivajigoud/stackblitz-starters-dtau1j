@@ -14,24 +14,30 @@ export const App: FC<{ name: string }> = ({ name }) => {
   const pages = [...Array(numberOfTotalPages + 1).keys()].slice(1);
   const pageControllerRef = useRef();
   const pageWrapperRef = useRef();
-  const [leftPosition, setLeftPosition] = useState('0px');
+  const [showDropDown, setShowDropDown] = useState(true);
+  const [dropdownLeftPosition, setDropdownLeftPosition] = useState('0px');
   function prevPage(): any {
     if (currentPage !== 1) {
       setCurrentPage(currentPage - 1);
       pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
-      pageWrapperRef.current.scrollLeft =
-        pageWrapperRef.current.scrollLeft - document.activeElement.offsetWidth;
-      setLeftPosition(
+      pageControllerRef.current.scrollLeft =
+        pageControllerRef.current.scrollLeft -
+        document.activeElement.offsetWidth;
+      setDropdownLeftPosition(
         document.activeElement.getBoundingClientRect().left -
-          document.activeElement.offsetWidth * 2
+          document.activeElement.offsetWidth * 2.5
       );
+      setShowDropDown(true);
     }
   }
   function nextPage(): any {
     if (currentPage !== numberOfTotalPages) {
       setCurrentPage(currentPage + 1);
       pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
-      setLeftPosition(document.activeElement.getBoundingClientRect().left);
+      setDropdownLeftPosition(
+        document.activeElement.getBoundingClientRect().left
+      );
+      setShowDropDown(true);
     }
   }
   // function pageFocus(): any {
@@ -44,10 +50,22 @@ export const App: FC<{ name: string }> = ({ name }) => {
   //   // if(document.activeElement.offsetLeft > pageWrapperRef.current.scrollLeft)
   //   // pageWrapperRef.current.scrollLeft = pageWrapperRef.current.scrollLeft - 70;
   // }
+  function setPositions() {
+    setDropdownLeftPosition(
+      document.activeElement.getBoundingClientRect().left
+    );
+  }
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/todos/')
       .then((res) => res.json())
       .then((todos) => setTodos(todos));
+    setDropdownLeftPosition(
+      document.activeElement.getBoundingClientRect().left
+    );
+    window.addEventListener('resize', setPositions);
+    return () => {
+      window.removeEventListener('resize', setPositions);
+    };
   }, []);
   return (
     <div>
@@ -62,21 +80,24 @@ export const App: FC<{ name: string }> = ({ name }) => {
                     key={index}
                     onClick={() => {
                       setCurrentPage(page);
-                      setLeftPosition(
+                      setDropdownLeftPosition(
                         document.activeElement.getBoundingClientRect().left
                       );
+                      currentPage == page
+                        ? setShowDropDown(true)
+                        : setShowDropDown(false);
                     }}
-                    // onFocus={pageFocus}
                     className={`${currentPage == page ? 'active' : ''}`}
                   >
                     {page}
                   </button>
                   <ul
                     className={`filter_drop_down ${
-                      currentPage == page ? 'show' : 'hide'
-                    }`}
-                    style={{ left: leftPosition }}
+                      currentPage == page && showDropDown ? 'show' : 'hide'
+                    } `}
+                    style={{ left: dropdownLeftPosition }}
                   >
+                    <a onClick={() => setShowDropDown(false)}>X</a>
                     {visibleTodos?.map((todo) => {
                       return (
                         <li key={todo.id}>
