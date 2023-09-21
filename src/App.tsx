@@ -14,8 +14,16 @@ export const App: FC<{ name: string }> = ({ name }) => {
   const pages = [...Array(numberOfTotalPages + 1).keys()].slice(1);
   const pageControllerRef = useRef();
   const pageWrapperRef = useRef();
-  const [showDropDown, setShowDropDown] = useState(true);
+  const [showDropDown, setShowDropDown] = useState(false);
+  const [showLFTButton, setShowLFTButton] = useState(false);
   const [dropdownLeftPosition, setDropdownLeftPosition] = useState('0px');
+  let filterButtons = Array.prototype.slice.apply(
+    document.querySelectorAll('.filter-buttons-wrapper')
+  );
+  let filterButtonsWidth = filterButtons.reduce((w, btn) => {
+    return w + btn.offsetWidth;
+  }, 0);
+  console.log(filterButtonsWidth);
   function prevPage(): any {
     if (currentPage !== 1) {
       setCurrentPage(currentPage - 1);
@@ -40,37 +48,49 @@ export const App: FC<{ name: string }> = ({ name }) => {
       setShowDropDown(true);
     }
   }
-  // function pageFocus(): any {
-  //   console.log(
-  //     document.activeElement.offsetLeft,
-  //     // pageWrapperRef.current.scrollLeft
-  //     pageControllerRef?.current?.getBoundingClientRect().left
-  //     // pageControllerRef?.current?.getBoundingClientRect().width
-  //   );
-  //   // if(document.activeElement.offsetLeft > pageWrapperRef.current.scrollLeft)
-  //   // pageWrapperRef.current.scrollLeft = pageWrapperRef.current.scrollLeft - 70;
-  // }
   function setPositions() {
     setDropdownLeftPosition(
       document.activeElement.getBoundingClientRect().left
     );
+    filterButtonsWidth = filterButtons.reduce((w, btn) => {
+      return w + btn.offsetWidth;
+    }, 0);
+    if (pageControllerRef?.current?.offsetWidth < filterButtonsWidth) {
+      setShowLFTButton(true);
+    } else setShowLFTButton(false);
   }
+
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/todos/')
       .then((res) => res.json())
-      .then((todos) => setTodos(todos));
-    setDropdownLeftPosition(
-      document.activeElement.getBoundingClientRect().left
-    );
+      .then((todos) => {
+        setTodos(todos);
+      })
+      .then(() => {
+        setCurrentPage(1);
+        filterButtonsWidth = filterButtons.reduce((w, btn) => {
+          return w + btn.offsetWidth;
+        }, 0);
+        setPositions();
+      });
+
     window.addEventListener('resize', setPositions);
     return () => {
       window.removeEventListener('resize', setPositions);
     };
   }, []);
+  useEffect(() => {
+    setPositions();
+  }, [currentPage]);
   return (
     <div>
       <div className="pagination">
-        <button onClick={() => prevPage()}>Prev</button>
+        <button
+          onClick={() => prevPage()}
+          className={`${showLFTButton ? 'show' : 'hide'}`}
+        >
+          Prev
+        </button>
         <div className="pagination-wrapper" ref={pageWrapperRef}>
           <div className="pagination-controller" ref={pageControllerRef}>
             {pages?.map((page, index) => {
@@ -110,7 +130,12 @@ export const App: FC<{ name: string }> = ({ name }) => {
             })}
           </div>
         </div>
-        <button onClick={() => nextPage()}>Next</button>
+        <button
+          onClick={() => nextPage()}
+          className={`${showLFTButton ? 'show' : 'hide'}`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
