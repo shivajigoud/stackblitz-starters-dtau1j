@@ -5,7 +5,7 @@ import './style.css';
 
 export const App: FC<{ name: string }> = ({ name }) => {
   const [todos, setTodos] = useState([]);
-  const [todosPerPage, setTodosPerPage] = useState(5);
+  const [todosPerPage, setTodosPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastTodo = currentPage + todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
@@ -18,10 +18,8 @@ export const App: FC<{ name: string }> = ({ name }) => {
     if (currentPage !== 1) {
       setCurrentPage(currentPage - 1);
       pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
-      if (document.activeElement.offsetLeft > pageWrapperRef.current.scrollLeft)
-        pageWrapperRef.current.scrollLeft =
-          pageWrapperRef.current.scrollLeft -
-          document.activeElement.offsetWidth;
+      pageWrapperRef.current.scrollLeft =
+        pageWrapperRef.current.scrollLeft - document.activeElement.offsetWidth;
     }
   }
   function nextPage(): any {
@@ -47,25 +45,36 @@ export const App: FC<{ name: string }> = ({ name }) => {
   }, []);
   return (
     <div>
-      <ul>
-        {visibleTodos?.map((todo) => {
-          return <li key={todo.id}>{todo.title}</li>;
-        })}
-      </ul>
       <div className="pagination">
         <button onClick={() => prevPage()}>Prev</button>
         <div className="pagination-wrapper" ref={pageWrapperRef}>
           <div className="pagination-controller" ref={pageControllerRef}>
             {pages?.map((page, index) => {
               return (
-                <button
-                  key={index}
-                  onClick={() => setCurrentPage(page)}
-                  // onFocus={pageFocus}
-                  className={`${currentPage == page ? 'active' : ''}`}
-                >
-                  {page}
-                </button>
+                <div className="filter-buttons-wrapper">
+                  <button
+                    key={index}
+                    onClick={() => setCurrentPage(page)}
+                    // onFocus={pageFocus}
+                    className={`${currentPage == page ? 'active' : ''}`}
+                  >
+                    {page}
+                  </button>
+                  <ul
+                    className={`filter_drop_down ${
+                      currentPage == page ? 'show' : 'hide'
+                    }`}
+                  >
+                    {visibleTodos?.map((todo) => {
+                      return (
+                        <li key={todo.id}>
+                          <input type="checkbox" id={todo.id} />
+                          <label htmlFor={todo.id}>{todo.value}</label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               );
             })}
           </div>

@@ -45,3 +45,20 @@ ul li {
   display: flex;
   transition: 0.3s ease-in-out;
 }
+.filter-buttons-wrapper {
+  display: flex;
+  position: relative;
+}
+.filter_drop_down {
+  position: fixed;
+  background: aliceblue;
+  display: flex;
+  flex-direction: column;
+  top: 55px;
+}
+.show {
+  display: flex;
+}
+.hide {
+  display: none;
+}
