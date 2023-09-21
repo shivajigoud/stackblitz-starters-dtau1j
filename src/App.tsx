@@ -14,16 +14,10 @@ export const App: FC<{ name: string }> = ({ name }) => {
   const pages = [...Array(numberOfTotalPages + 1).keys()].slice(1);
   const pageControllerRef = useRef();
   const pageWrapperRef = useRef();
-  const [showDropDown, setShowDropDown] = useState(false);
+  const [showDropDown, setShowDropDown] = useState(true);
   const [showLFTButton, setShowLFTButton] = useState(false);
   const [dropdownLeftPosition, setDropdownLeftPosition] = useState('0px');
-  let filterButtons = Array.prototype.slice.apply(
-    document.querySelectorAll('.filter-buttons-wrapper')
-  );
-  let filterButtonsWidth = filterButtons.reduce((w, btn) => {
-    return w + btn.offsetWidth;
-  }, 0);
-  console.log(filterButtonsWidth);
+
   function prevPage(): any {
     if (currentPage !== 1) {
       setCurrentPage(currentPage - 1);
@@ -52,27 +46,26 @@ export const App: FC<{ name: string }> = ({ name }) => {
     setDropdownLeftPosition(
       document.activeElement.getBoundingClientRect().left
     );
-    filterButtonsWidth = filterButtons.reduce((w, btn) => {
+    let filterButtons = Array.prototype.slice.apply(
+      document.querySelectorAll('.filter-buttons-wrapper')
+    );
+    let filterButtonsWidth = filterButtons.reduce((w, btn) => {
       return w + btn.offsetWidth;
     }, 0);
+    console.log(filterButtonsWidth);
     if (pageControllerRef?.current?.offsetWidth < filterButtonsWidth) {
       setShowLFTButton(true);
     } else setShowLFTButton(false);
   }
 
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/todos/')
-      .then((res) => res.json())
-      .then((todos) => {
-        setTodos(todos);
-      })
-      .then(() => {
-        setCurrentPage(1);
-        filterButtonsWidth = filterButtons.reduce((w, btn) => {
-          return w + btn.offsetWidth;
-        }, 0);
-        setPositions();
-      });
+    (async function () {
+      const data = await fetch('https://jsonplaceholder.typicode.com/todos/');
+      const todos = await data.json();
+      setTodos(todos);
+      setCurrentPage(1);
+      setPositions();
+    })();
 
     window.addEventListener('resize', setPositions);
     return () => {
