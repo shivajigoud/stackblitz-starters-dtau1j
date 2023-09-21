@@ -51,10 +51,10 @@ ul li {
 }
 .filter_drop_down {
   position: fixed;
-  background: aliceblue;
+  background: #94cbfc;
   display: flex;
   flex-direction: column;
-  top: 55px;
+  inset: 55px auto auto;
 }
 .show {
   display: flex;

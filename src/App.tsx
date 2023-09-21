@@ -14,18 +14,24 @@ export const App: FC<{ name: string }> = ({ name }) => {
   const pages = [...Array(numberOfTotalPages + 1).keys()].slice(1);
   const pageControllerRef = useRef();
   const pageWrapperRef = useRef();
+  const [leftPosition, setLeftPosition] = useState('0px');
   function prevPage(): any {
     if (currentPage !== 1) {
       setCurrentPage(currentPage - 1);
       pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
       pageWrapperRef.current.scrollLeft =
         pageWrapperRef.current.scrollLeft - document.activeElement.offsetWidth;
+      setLeftPosition(
+        document.activeElement.getBoundingClientRect().left -
+          document.activeElement.offsetWidth * 2
+      );
     }
   }
   function nextPage(): any {
     if (currentPage !== numberOfTotalPages) {
       setCurrentPage(currentPage + 1);
       pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
+      setLeftPosition(document.activeElement.getBoundingClientRect().left);
     }
   }
   // function pageFocus(): any {
@@ -54,7 +60,12 @@ export const App: FC<{ name: string }> = ({ name }) => {
                 <div className="filter-buttons-wrapper">
                   <button
                     key={index}
-                    onClick={() => setCurrentPage(page)}
+                    onClick={() => {
+                      setCurrentPage(page);
+                      setLeftPosition(
+                        document.activeElement.getBoundingClientRect().left
+                      );
+                    }}
                     // onFocus={pageFocus}
                     className={`${currentPage == page ? 'active' : ''}`}
                   >
@@ -64,6 +75,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
                     className={`filter_drop_down ${
                       currentPage == page ? 'show' : 'hide'
                     }`}
+                    style={{ left: leftPosition }}
                   >
                     {visibleTodos?.map((todo) => {
                       return (
