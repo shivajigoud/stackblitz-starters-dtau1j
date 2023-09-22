@@ -1,11 +1,11 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, use, useEffect, useRef, useState } from 'react';
 import { act } from 'react-dom/test-utils';
 
 import './style.css';
 
 export const App: FC<{ name: string }> = ({ name }) => {
   const [todos, setTodos] = useState([]);
-  const [todosPerPage, setTodosPerPage] = useState(20);
+  const [todosPerPage, setTodosPerPage] = useState(15);
   const [currentPage, setCurrentPage] = useState(1);
   const indexOfLastTodo = currentPage + todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
@@ -17,42 +17,38 @@ export const App: FC<{ name: string }> = ({ name }) => {
   const [showDropDown, setShowDropDown] = useState(true);
   const [showLFTButton, setShowLFTButton] = useState(false);
   const [dropdownLeftPosition, setDropdownLeftPosition] = useState('0px');
+  const [moveableArry, setMovableArry] = useState([]);
 
   function prevPage(): any {
     if (currentPage !== 1) {
       setCurrentPage(currentPage - 1);
-      pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
-      pageWrapperRef.current.scrollLeft =
-        pageWrapperRef.current.scrollLeft - document.activeElement.offsetWidth;
-      setDropdownLeftPosition(
-        document.activeElement.getBoundingClientRect().left -
-          document.activeElement.offsetWidth * 2.5
-      );
-      setShowDropDown(false);
     }
+    let pwsLeft = pageWrapperRef.current.scrollLeft;
+    let pwsWidth = pageWrapperRef.current.scrollWidth;
+    let pwcWidth = pageWrapperRef.current.clientWidth;
+    pageWrapperRef.current.scrollTo(pwsLeft - pwcWidth, 0);
+    pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
+    setShowDropDown(false);
   }
   function nextPage(): any {
     if (currentPage !== numberOfTotalPages) {
       setCurrentPage(currentPage + 1);
-      pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
-      setDropdownLeftPosition(
-        document.activeElement.getBoundingClientRect().left
-      );
-      setShowDropDown(false);
     }
+    let pwsLeft = pageWrapperRef.current.scrollLeft;
+    let pwsWidth = pageWrapperRef.current.scrollWidth;
+    let pwcWidth = pageWrapperRef.current.clientWidth;
+    pageWrapperRef.current.scrollTo(pwsLeft + pwcWidth, 0);
+    // pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
+
+    setShowDropDown(false);
   }
   function setPositions() {
     setDropdownLeftPosition(
       document.activeElement.getBoundingClientRect().left
     );
-    let filterButtons = Array.prototype.slice.apply(
-      document.querySelectorAll('.filter-buttons-wrapper')
-    );
-    let filterButtonsWidth = filterButtons.reduce((w, btn) => {
-      return w + btn.offsetWidth;
-    }, 0);
-    console.log(filterButtonsWidth);
-    if (pageControllerRef?.current?.offsetWidth < filterButtonsWidth) {
+    let pw = pageWrapperRef?.current?.clientWidth;
+    let pcw = pageControllerRef?.current?.offsetWidth;
+    if (pw < pcw) {
       setShowLFTButton(true);
     } else setShowLFTButton(false);
   }

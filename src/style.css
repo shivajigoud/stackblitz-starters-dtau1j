@@ -38,8 +38,10 @@ ul li {
 }
 .pagination-wrapper {
   position: relative;
-  overflow: hidden;
-  width: 50%;
+  overflow: scroll;
+  width: 90%;
+  min-height: 150px;
+  scroll-behavior: smooth;
 }
 .pagination {
   display: flex;
@@ -47,6 +49,8 @@ ul li {
 .pagination-controller {
   display: flex;
   transition: 0.3s ease-in-out;
+  position: absolute;
+  flex-wrap: nowrap;
 }
 .filter-buttons-wrapper {
   display: flex;
