@@ -7,6 +7,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
   const [todos, setTodos] = useState([]);
   const [todosPerPage, setTodosPerPage] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showLFTButton, setShowLFTButton] = useState(false);
   const indexOfLastTodo = currentPage + todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
   const visibleTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -30,20 +31,29 @@ export const App: FC<{ name: string }> = ({ name }) => {
       pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
     }
   }
-  // function pageFocus(): any {
-  //   console.log(
-  //     document.activeElement.offsetLeft,
-  //     // pageWrapperRef.current.scrollLeft
-  //     pageControllerRef?.current?.getBoundingClientRect().left
-  //     // pageControllerRef?.current?.getBoundingClientRect().width
-  //   );
-  //   // if(document.activeElement.offsetLeft > pageWrapperRef.current.scrollLeft)
-  //   // pageWrapperRef.current.scrollLeft = pageWrapperRef.current.scrollLeft - 70;
-  // }
+  function controlButtonsVisibility() {
+    let filterButtons = Array.prototype.slice.apply(
+      pageControllerRef?.current?.querySelectorAll('button')
+    );
+    let filterButtonsWidth = filterButtons.reduce((w, btn) => {
+      return w + btn.offsetWidth;
+    }, 0);
+    console.log(filterButtonsWidth);
+    if (pageControllerRef?.current?.offsetWidth < filterButtonsWidth) {
+      setShowLFTButton(true);
+    } else setShowLFTButton(false);
+  }
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/todos/')
       .then((res) => res.json())
-      .then((todos) => setTodos(todos));
+      .then((todos) => {
+        setTodos(todos);
+        controlButtonsVisibility();
+      });
+    window.addEventListener('resize', controlButtonsVisibility);
+    return () => {
+      window.removeEventListener('resize', controlButtonsVisibility);
+    };
   }, []);
   return (
     <div>
@@ -53,7 +63,12 @@ export const App: FC<{ name: string }> = ({ name }) => {
         })}
       </ul>
       <div className="pagination">
-        <button onClick={() => prevPage()}>Prev</button>
+        <button
+          onClick={() => prevPage()}
+          className={`${showLFTButton ? 'show' : 'hide'}`}
+        >
+          Prev
+        </button>
         <div className="pagination-wrapper" ref={pageWrapperRef}>
           <div className="pagination-controller" ref={pageControllerRef}>
             {pages?.map((page, index) => {
@@ -70,7 +85,12 @@ export const App: FC<{ name: string }> = ({ name }) => {
             })}
           </div>
         </div>
-        <button onClick={() => nextPage()}>Next</button>
+        <button
+          onClick={() => nextPage()}
+          className={`${showLFTButton ? 'show' : 'hide'}`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
