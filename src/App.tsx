@@ -36,7 +36,14 @@ export const App: FC<{ name: string }> = ({ name }) => {
       pageControllerRef?.current?.querySelectorAll('button')
     );
     let filterButtonsWidth = filterButtons.reduce((w, btn) => {
-      return w + btn.offsetWidth;
+      return (
+        w +
+        btn.offsetWidth +
+        parseInt(
+          window.getComputedStyle(btn).getPropertyValue('margin-right')
+        ) +
+        parseInt(window.getComputedStyle(btn).getPropertyValue('margin-left'))
+      );
     }, 0);
     console.log(filterButtonsWidth);
     if (pageControllerRef?.current?.offsetWidth < filterButtonsWidth) {
