@@ -12,43 +12,32 @@ export const App: FC<{ name: string }> = ({ name }) => {
   const visibleTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
   const numberOfTotalPages = Math.ceil(todos.length / todosPerPage);
   const pages = [...Array(numberOfTotalPages + 1).keys()].slice(1);
-  const pageControllerRef = useRef();
   const pageWrapperRef = useRef();
   const [showDropDown, setShowDropDown] = useState(true);
   const [showLFTButton, setShowLFTButton] = useState(false);
   const [dropdownLeftPosition, setDropdownLeftPosition] = useState('0px');
-  const [moveableArry, setMovableArry] = useState([]);
 
   function prevPage(): any {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
     let pwsLeft = pageWrapperRef.current.scrollLeft;
     let pwsWidth = pageWrapperRef.current.scrollWidth;
     let pwcWidth = pageWrapperRef.current.clientWidth;
     pageWrapperRef.current.scrollTo(pwsLeft - pwcWidth, 0);
-    pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
     setShowDropDown(false);
   }
   function nextPage(): any {
-    if (currentPage !== numberOfTotalPages) {
-      setCurrentPage(currentPage + 1);
-    }
     let pwsLeft = pageWrapperRef.current.scrollLeft;
     let pwsWidth = pageWrapperRef.current.scrollWidth;
     let pwcWidth = pageWrapperRef.current.clientWidth;
     pageWrapperRef.current.scrollTo(pwsLeft + pwcWidth, 0);
-    // pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
-
     setShowDropDown(false);
   }
   function setPositions() {
     setDropdownLeftPosition(
       document.activeElement.getBoundingClientRect().left
     );
-    let pw = pageWrapperRef?.current?.clientWidth;
-    let pcw = pageControllerRef?.current?.offsetWidth;
-    if (pw < pcw) {
+    let pwcw = pageWrapperRef?.current?.clientWidth;
+    let pwsw = pageWrapperRef?.current?.scrollWidth;
+    if (pwcw < pwsw) {
       setShowLFTButton(true);
     } else setShowLFTButton(false);
   }
@@ -80,7 +69,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
           Prev
         </button>
         <div className="pagination-wrapper" ref={pageWrapperRef}>
-          <div className="pagination-controller" ref={pageControllerRef}>
+          <div className="pagination-controller">
             {pages?.map((page, index) => {
               return (
                 <div className="filter-buttons-wrapper">
