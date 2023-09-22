@@ -38,7 +38,7 @@ ul li {
 }
 .pagination-wrapper {
   position: relative;
-  overflow: scroll;
+  overflow: hidden;
   width: 90%;
   min-height: 150px;
   scroll-behavior: smooth;
