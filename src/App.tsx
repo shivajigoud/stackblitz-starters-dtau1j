@@ -22,14 +22,13 @@ export const App: FC<{ name: string }> = ({ name }) => {
     if (currentPage !== 1) {
       setCurrentPage(currentPage - 1);
       pageWrapperRef?.current?.querySelectorAll('button')[currentPage]?.focus();
-      pageControllerRef.current.scrollLeft =
-        pageControllerRef.current.scrollLeft -
-        document.activeElement.offsetWidth;
+      pageWrapperRef.current.scrollLeft =
+        pageWrapperRef.current.scrollLeft - document.activeElement.offsetWidth;
       setDropdownLeftPosition(
         document.activeElement.getBoundingClientRect().left -
           document.activeElement.offsetWidth * 2.5
       );
-      setShowDropDown(true);
+      setShowDropDown(false);
     }
   }
   function nextPage(): any {
@@ -39,7 +38,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
       setDropdownLeftPosition(
         document.activeElement.getBoundingClientRect().left
       );
-      setShowDropDown(true);
+      setShowDropDown(false);
     }
   }
   function setPositions() {

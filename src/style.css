@@ -63,6 +63,7 @@ ul li {
   flex-direction: column;
   inset: 55px auto auto;
   z-index: 1000;
+  margin: 0;
 }
 .show {
   display: flex;
