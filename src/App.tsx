@@ -16,7 +16,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
   const [showDropDown, setShowDropDown] = useState(true);
   const [showLFTButton, setShowLFTButton] = useState(false);
   const [dropdownLeftPosition, setDropdownLeftPosition] = useState('0px');
-
+  const names = ['Mahi', 'Shiba Prasad', 'Ramakrishna', 'shivaji'];
   function prevPage(): any {
     let pwsLeft = pageWrapperRef.current.scrollLeft;
     let pwsWidth = pageWrapperRef.current.scrollWidth;
@@ -84,7 +84,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
                     }}
                     className={`${currentPage == page ? 'active' : ''}`}
                   >
-                    {page}
+                    {page + names[Math.floor(Math.random() * 4)]}
                   </button>
                   <ul
                     className={`filter_drop_down ${
